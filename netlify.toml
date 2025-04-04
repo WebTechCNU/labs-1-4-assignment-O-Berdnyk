@@ -5,11 +5,13 @@
   from = "/api/books"
   to = "/.netlify/functions/get"
   status = 200
+  force = true
 
 [[redirects]]
   from = "/api/books/add"
   to = "/.netlify/functions/post"
   status = 200
+  method = "POST"
   force = true
   
 [[redirects]]
@@ -17,6 +19,7 @@
   to = "/.netlify/functions/put"
   status = 200
   method = "PUT"
+  force = true
 
 [[redirects]]
   from = "/api/books/delete"
