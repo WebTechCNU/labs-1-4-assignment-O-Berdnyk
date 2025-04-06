@@ -13,7 +13,6 @@ exports.handler = async (event) => {
       body: "",
     };
   }
-  
   if (event.httpMethod !== "POST") {
     return {
       statusCode: 405,
@@ -42,8 +41,8 @@ exports.handler = async (event) => {
     }
 
     const collection = await connectDB(); 
-    const lastBook = await collection.find().sort({ id: -1 }).limit(1).toArray();
-    const newId = lastBook.length > 0 ? lastBook[0].id + 1 : 1;
+    const lastBook = await collection.find().sort({ _id: -1 }).limit(1).toArray();
+    const newId = lastBook.length > 0 ? lastBook[0]._id + 1 : 1;
 
     const newBook = { _id: newId, title, author, rating: Number(rating), year: Number(year) };
 

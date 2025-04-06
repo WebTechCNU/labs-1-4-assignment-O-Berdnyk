@@ -38,7 +38,7 @@ exports.handler = async (event) => {
 
     const collection = await connectDB();
     const result = await collection.updateOne(
-      { id: Number(id) },
+      { _id: Number(id) },
       { $set: { title, author, rating: Number(rating), year } }
     );
 
