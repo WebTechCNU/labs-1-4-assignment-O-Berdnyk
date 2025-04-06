@@ -1,2 +1,29 @@
 [build]
-functions = "functions"
+  functions = "functions"
+
+[[redirects]]
+  from = "/api/books"
+  to = "/.netlify/functions/get"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/api/books/add"
+  to = "/.netlify/functions/post"
+  status = 200
+  method = "POST"
+  force = true
+  
+[[redirects]]
+  from = "/api/books/edit"
+  to = "/.netlify/functions/put"
+  status = 200
+  method = "PUT"
+  force = true
+
+[[redirects]]
+  from = "/api/books/delete"
+  to = "/.netlify/functions/delete"
+  status = 200
+  force = true
+  method = "DELETE"
