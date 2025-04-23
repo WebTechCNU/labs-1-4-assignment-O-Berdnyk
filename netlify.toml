@@ -27,3 +27,8 @@
   status = 200
   force = true
   method = "DELETE"
+
+[[redirects]]
+  from = "/graphql"
+  to = "/.netlify/functions/graphql"
+  status = 200
