@@ -2,10 +2,9 @@ const { ApolloServer, gql } = require("apollo-server-express");
 const express = require("express");
 const serverless = require("serverless-http");
 const connectDB = require("./db");
-const { string } = require("mongodb");
 
 const typeDefs = gql`
-  type Item {
+  type Book {
     _id: Int!
     title: String!
     author: String!
@@ -14,43 +13,42 @@ const typeDefs = gql`
   }
 
   type Query {
-    items(skip: Int, take: Int, sortField: String, sortOrder: String): [Item]
-    item(id: Int!): Item
+    books(skip: Int, take: Int, sortField: String, sortOrder: String): [Book]
+    book(id: Int!): Book
   }
 
   type Mutation {
-    createItem(title: String!, author: String!, rating: Int!, year: Int!): Item
-    updateItem(id: Int!, title: String, author: String, rating: Int, year: Int): Item
-    deleteItem(id: Int!): Boolean
+    createBook(title: String!, author: String!, rating: Int!, year: Int!): Book
+    updateBook(id: Int!, title: String, author: String, rating: Int, year: Int): Book
+    deleteBook(id: Int!): Boolean
   }
 `;
 
-
 const resolvers = {
   Query: {
-    items: async (_, { skip = 0, take = 10, sortField = "title", sortOrder = "asc" }) => {
+    books: async (_, { skip = 0, take = 10, sortField = "title", sortOrder = "asc" }) => {
       const collection = await connectDB();
-      const sort = { [sortField]: sortOrder === "desc" ? -1 : 1 };
-      return await collection.find({}).sort(sort).skip(skip).limit(take).toArray();
+      const sort = sortField ? { [sortField]: sortOrder === "desc" ? -1 : 1 } : {};
+      return await collection.find().sort(sort).skip(skip).limit(take).toArray();
     },
-    item: async (_, { id }) => {
+    book: async (_, { id }) => {
       const collection = await connectDB();
       return await collection.findOne({ _id: id });
     },
   },
+
   Mutation: {
-    createItem: async (_, { title, author, rating, year }) => {
+    createBook: async (_, { title, author, rating, year }) => {
       const collection = await connectDB();
+      const lastBook = await collection.find().sort({ _id: -1 }).limit(1).toArray();
+      const newId = lastBook.length > 0 ? lastBook[0]._id + 1 : 1;
 
-      // Знайти найбільший _id, щоб зробити автоінкремент
-      const lastItem = await collection.find().sort({ _id: -1 }).limit(1).toArray();
-      const newId = lastItem.length > 0 ? lastItem[0]._id + 1 : 1;
-
-      const newItem = { _id: newId, title, author, rating, year };
-      await collection.insertOne(newItem);
-      return newItem;
+      const newBook = { _id: newId, title, author, rating, year };
+      await collection.insertOne(newBook);
+      return newBook;
     },
-    updateItem: async (_, { id, title, author, rating, year }) => {
+
+    updateBook: async (_, { id, title, author, rating, year }) => {
       const collection = await connectDB();
       const updateFields = {};
       if (title !== undefined) updateFields.title = title;
@@ -61,7 +59,8 @@ const resolvers = {
       await collection.updateOne({ _id: id }, { $set: updateFields });
       return { _id: id, ...updateFields };
     },
-    deleteItem: async (_, { id }) => {
+
+    deleteBook: async (_, { id }) => {
       const collection = await connectDB();
       const result = await collection.deleteOne({ _id: id });
       return result.deletedCount > 0;
@@ -74,7 +73,7 @@ const app = express();
 const server = new ApolloServer({
   typeDefs,
   resolvers,
-  context: ({ event, context }) => ({ event, context }),
+  context: ({ event }) => ({ event }),
 });
 
 async function startApolloServer() {
@@ -85,5 +84,3 @@ async function startApolloServer() {
 startApolloServer();
 
 exports.handler = serverless(app);
-
-
