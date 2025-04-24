@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+  <meta charset="UTF-8" />
+  <title>Книги</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <div class="container">
+    <h2>📚 Список книг</h2>
+
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Назва</th>
+                <th>Автор</th>
+                <th>Рік</th>
+                <th>Оцінка</th>
+            </tr>
+        </thead>
+        <tbody id="booksTable"></tbody>
+    </table>
+
+    <h2>📚 Додати книгу</h2> 
+        <form id="book-form">
+            <div class="form-group">
+              <label for="title">Назва книги:</label>
+              <input type="text" id="title" name="title" required>
+            </div>
+            <div class="form-group">
+              <label for="author">Автор:</label>
+              <input type="text" id="author" name="author" required>
+            </div>
+            <div class="form-group">
+              <label for="rating">Оцінка:</label>
+              <input type="number" id="rating" name="rating" min="0" max="10" required>
+            </div>
+            <div class="form-group">
+              <label for="year">Рік видачі:</label>
+              <select id="year" name="year" required>
+                <option value="">Виберіть рік</option>
+              </select>
+            </div>
+            <button type="submit" class="add-btn">Додати книгу</button>
+          </form>
+
+
+  </div>
+  <script src="js/graphql-use.js"></script>
+</body>
+</html>
