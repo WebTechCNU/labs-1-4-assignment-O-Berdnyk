@@ -1,3 +1,13 @@
+window.addEventListener('DOMContentLoaded', () => {
+  const token = localStorage.getItem("token");
+
+  if (!token) {
+    alert("Будь ласка, увійдіть в систему, щоб додати книгу.");
+    window.location.href = "/login.html";
+    return;
+  }
+});
+
 const yearSelect = document.getElementById("year");
 const currentYear = new Date().getFullYear();
 for (let year = currentYear; year >= 1900; year--) {
@@ -21,11 +31,15 @@ async function addBook(event) {
     }
   
     const newBook = { title, author, rating: Number(rating), year: Number(year) };
-  
+    const token = localStorage.getItem("token");
+
     try {
       const response = await fetch("/api/books/add", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+              'Authorization': `Bearer ${token}`,
+              'Content-Type': 'application/json',
+            },
         body: JSON.stringify(newBook),
       });
   

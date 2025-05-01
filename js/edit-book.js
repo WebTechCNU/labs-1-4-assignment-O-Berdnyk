@@ -8,49 +8,60 @@ for (let year = currentYear; year >= 1900; year--) {
 }
 
 window.addEventListener('DOMContentLoaded', () => {
-    const bookData = JSON.parse(localStorage.getItem('editBook'));
+  const token = localStorage.getItem("token");
+  if (!token) {
+    alert("Будь ласка, увійдіть в систему, щоб редагувати книгу.");
+    window.location.href = "/login.html";
+    return;
+  }
   
-    if (bookData) {
-      document.getElementById('title').value = bookData.title;
-      document.getElementById('author').value = bookData.author;
-      document.getElementById('rating').value = bookData.rating;
-      document.getElementById('year').value = bookData.year;
+  const bookData = JSON.parse(localStorage.getItem('editBook'));
 
-      document.getElementById('edit-form').onsubmit = async function (event) {
-        event.preventDefault();
-  
-        const updatedBook = {
-          id: Number(bookData.id), 
-          title: document.getElementById('title').value,
-          author: document.getElementById('author').value,
-          rating: Number(document.getElementById('rating').value),
-          year: Number(document.getElementById('year').value),
-        };
+  if (bookData) {
+    document.getElementById('title').value = bookData.title;
+    document.getElementById('author').value = bookData.author;
+    document.getElementById('rating').value = bookData.rating;
+    document.getElementById('year').value = bookData.year;
 
-        try {
-          const response = await fetch(`/api/books/edit`, {
-            method: 'PUT',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(updatedBook),
-          });
-          
-          const result = await response.json();
-          
-          console.log(result);
-          if (response.ok) {
-            alert("Книга успішно оновлена!");
-            window.location.href = '/'; 
-          } else {
-            alert("Помилка при оновленні книги: " + result.message);
-          }
-        } catch (error) {
-          console.error("Помилка оновлення книги:", error);
-          alert("Сталася помилка при оновленні книги.");
-        }
+    document.getElementById('edit-form').onsubmit = async function (event) {
+      event.preventDefault();
+
+      const updatedBook = {
+        id: Number(bookData.id),
+        title: document.getElementById('title').value,
+        author: document.getElementById('author').value,
+        rating: Number(document.getElementById('rating').value),
+        year: Number(document.getElementById('year').value),
       };
-    } else {
-      alert("Дані книги не знайдені!");
-      window.location.href = '/'; 
-    }
-  });
-  
+
+      const token = localStorage.getItem("token");
+
+      try {
+        const response = await fetch(`/api/books/edit`, {
+          method: 'PUT',
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(updatedBook),
+        });
+
+        const result = await response.json();
+
+        console.log(result);
+        if (response.ok) {
+          alert("Книга успішно оновлена!");
+          window.location.href = '/';
+        } else {
+          alert("Помилка при оновленні книги: " + result.message);
+        }
+      } catch (error) {
+        console.error("Помилка оновлення книги:", error);
+        alert("Сталася помилка при оновленні книги.");
+      }
+    };
+  } else {
+    alert("Дані книги не знайдені!");
+    window.location.href = '/';
+  }
+});

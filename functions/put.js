@@ -1,4 +1,5 @@
 require("dotenv").config();
+const jwt = require("jsonwebtoken");
 const connectDB = require("./db");
 
 exports.handler = async (event) => {
@@ -8,7 +9,7 @@ exports.handler = async (event) => {
       headers: {
         "Access-Control-Allow-Origin": "*",
         "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS",
-        "Access-Control-Allow-Headers": "Content-Type"
+        "Access-Control-Allow-Headers": "Content-Type, Authorization",
       },
       body: "",
     };
@@ -17,7 +18,41 @@ exports.handler = async (event) => {
   if (event.httpMethod !== "PUT") {
     return {
       statusCode: 405,
+      headers: {
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS",
+        "Access-Control-Allow-Headers": "Content-Type, Authorization"
+      },
       body: JSON.stringify({ message: "Метод не дозволений" }),
+    };
+  }
+
+  const token = event.headers.authorization?.split(" ")[1];
+  const secretKey = process.env.JWT_SECRET || "secret-key";
+
+  if (!token) {
+    return {
+      statusCode: 401,
+      headers: {
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS",
+        "Access-Control-Allow-Headers": "Content-Type, Authorization"
+      },
+      body: JSON.stringify({ error: "Unauthorized: No token provided" }),
+    };
+  }
+
+  try {
+    jwt.verify(token, secretKey);
+  } catch (error) {
+    return {
+      statusCode: 403,
+      headers: {
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS",
+        "Access-Control-Allow-Headers": "Content-Type, Authorization"
+      },
+      body: JSON.stringify({ error: "Forbidden: Invalid token" }),
     };
   }
 
@@ -30,7 +65,7 @@ exports.handler = async (event) => {
         headers: {
           "Access-Control-Allow-Origin": "*",
           "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS",
-          "Access-Control-Allow-Headers": "Content-Type"
+          "Access-Control-Allow-Headers": "Content-Type, Authorization"
         },
         body: JSON.stringify({ message: "Всі поля обов'язкові!" }),
       };
@@ -48,7 +83,7 @@ exports.handler = async (event) => {
         headers: {
           "Access-Control-Allow-Origin": "*",
           "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS",
-          "Access-Control-Allow-Headers": "Content-Type"
+          "Access-Control-Allow-Headers": "Content-Type, Authorization"
         },
         body: JSON.stringify({ message: "Книга не знайдена" }),
       };
@@ -59,7 +94,7 @@ exports.handler = async (event) => {
       headers: {
         "Access-Control-Allow-Origin": "*",
         "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS",
-        "Access-Control-Allow-Headers": "Content-Type"
+        "Access-Control-Allow-Headers": "Content-Type, Authorization"
       },
       body: JSON.stringify({ message: "Книга успішно оновлена" }),
     };
@@ -69,7 +104,7 @@ exports.handler = async (event) => {
       headers: {
         "Access-Control-Allow-Origin": "*",
         "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS",
-        "Access-Control-Allow-Headers": "Content-Type"
+        "Access-Control-Allow-Headers": "Content-Type, Authorization"
       },
       body: JSON.stringify({ message: "Помилка при оновленні книги", error: error.message }),
     };
