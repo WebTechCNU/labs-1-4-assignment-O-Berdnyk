@@ -18,13 +18,15 @@ document.addEventListener("DOMContentLoaded", function () {
     const username = document.getElementById("username").value;
     const password = document.getElementById("password").value;
 
+    const hashedPassword = CryptoJS.SHA256(password).toString();
+
     try {
       const response = await fetch("/api/login", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ username, password }),
+        body: JSON.stringify({ username, password: hashedPassword }),
       });
 
       const data = await response.json();

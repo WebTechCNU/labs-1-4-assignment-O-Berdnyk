@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="uk">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Логін</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+  <div class="container">
+    <h2>Реєстрація</h2>
+    <form id="registerForm">
+      <div class="form-group">
+        <label for="username"> Придумайте Логін:</label>
+        <input type="text" id="username"  maxlength="20" required />
+      </div>
+      <div class="form-group">
+        <label for="password">Придумайте Пароль:</label>
+        <input type="password" id="password"  maxlength="30" required />
+      </div>
+      <button type="submit" id="register-btn" class="add-btn">Реєстрація</button>
+    </form>
+    <p id="message"></p>
+    <a href="index.html" class="back-btn">⬅ Назад</a>
+  </div>
+
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
+  <script src="js/register.js"></script>
+</body>
+
+</html>
