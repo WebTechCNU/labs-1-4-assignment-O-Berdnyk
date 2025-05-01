@@ -113,6 +113,7 @@ label {
 
 input[type="text"],
 input[type="number"],
+input[type="password"],
 select {
   width: 80%;
   padding: 12px;
@@ -125,7 +126,31 @@ select {
 
 input[type="text"]:focus,
 input[type="number"]:focus,
+input[type="password"]:focus,
 select:focus {
   border-color: #007bff;
   outline: none;
+}
+
+.header-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 20px;
+}
+
+.header-row h2 {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  margin: 0;
+}
+
+.header-row .login-btn {
+  margin-left: auto;
+  padding: 8px 16px;
+  text-decoration: none;
+  background-color: #007bff;
+  color: white;
+  border-radius: 4px;
 }
