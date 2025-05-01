@@ -17,7 +17,7 @@ exports.handler = async (event) => {
 
   // Авторизація через JWT
   const token = event.headers.authorization?.split(" ")[1];
-  const secretKey = process.env.JWT_SECRET;
+  const secretKey = process.env.JWT_SECRET  || "secret-key";
 
   if (!token) {
     return {
