@@ -56,7 +56,7 @@ exports.handler = async (event) => {
       };
     }
 
-    const secretKey = process.env.JWT_SECRET;
+    const secretKey = process.env.JWT_SECRET || "secret-key";
     const token = jwt.sign({ username }, secretKey, { expiresIn: "1h" });
 
     return {
